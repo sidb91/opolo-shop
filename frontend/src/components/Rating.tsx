@@ -1,7 +1,12 @@
 import React from "react";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
-const Rating = ({ value, text }) => {
+type RatingProps = {
+  value: number;
+  text: string;
+}
+
+const Rating = ({ value, text }: RatingProps): React.JSX.Element => {
 
   return (
 

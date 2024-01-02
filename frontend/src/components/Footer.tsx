@@ -1,9 +1,9 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
-const Footer = () => {
+const Footer = (): React.JSX.Element => {
 
-  const currentYear = new Date().getFullYear();
+  const currentYear: number = new Date().getFullYear();
 
   return (
     <footer>

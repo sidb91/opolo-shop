@@ -1,5 +1,9 @@
 Source :: https://github.com/bradtraversy/proshop-v2
 
+# Dependencies installed
+
+npm i -D nodemon concurrently dotenv
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
