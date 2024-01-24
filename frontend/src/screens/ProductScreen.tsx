@@ -1,20 +1,37 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
 
 import Rating from "../components/Rating";
-import { useGetProductDetailsQuery } from "../slices/productApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
+import { useGetProductDetailsQuery } from "../slices/productApiSlice";
+import { addToCart } from "../slices/cartSlice";
+
 const ProductScreen = (): React.JSX.Element => {
-
   //const [product, setProduct] = useState<IProduct | null>(null);
-  
-  const { id: productId } = useParams();
+  const [qty, setQty] = useState(1);
 
-  const {data:product, isLoading, error } = useGetProductDetailsQuery(productId);
+  const { id: productId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useGetProductDetailsQuery(productId);
 
   // const fetchProduct = useCallback(async ():Promise<void> => {
   //   const {data} = await axios.get(`/api/products/${productId}`);
@@ -26,19 +43,23 @@ const ProductScreen = (): React.JSX.Element => {
   //   fetchProduct();
   // },[fetchProduct])
 
-  if(error){
-    if ('status' in error) {
+  if (error) {
+    if ("status" in error) {
       // you can access all properties of `FetchBaseQueryError` here
-      const errMsg: string = 'error' in error ? error.error : JSON.stringify(error.data);
+      const errMsg: string =
+        "error" in error ? error.error : JSON.stringify(error.data);
 
-      return (
-        <Message variant="danger">{errMsg}</Message>
-      ) 
+      return <Message variant="danger">{errMsg}</Message>;
     } else {
-        // you can access all properties of `SerializedError` here
-        return <Message variant="danger">{error.message}</Message>
+      // you can access all properties of `SerializedError` here
+      return <Message variant="danger">{error.message}</Message>;
     }
   }
+
+  const addToCartHandler = () => {
+    dispatch(addToCart({ ...product, qty }));
+    navigate("/cart");
+  };
 
   return (
     <>
@@ -46,67 +67,93 @@ const ProductScreen = (): React.JSX.Element => {
         Go Back
       </Link>
 
-      { isLoading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <Row>
-        <Col md={6}>
-          <Image src={product?.image} alt={product?.name} fluid />
-        </Col>
+          <Col md={6}>
+            <Image src={product?.image} alt={product?.name} fluid />
+          </Col>
 
-        <Col md={3}>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <h3>{product?.name}</h3>
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <Rating
-                value={product?.rating}
-                text={`${product?.numReviews} reviews `}
-              />
-            </ListGroup.Item>
-
-            <ListGroup.Item>Price : ${product?.price}</ListGroup.Item>
-            <ListGroup.Item>Description: {product?.description}</ListGroup.Item>
-          </ListGroup>
-        </Col>
-
-        <Col md={3}>
-          <Card>
+          <Col md={3}>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                <Row>
-                  <Col>Price:</Col>
-                  <Col>
-                    <strong>${product?.price}</strong>
-                  </Col>
-                </Row>
+                <h3>{product?.name}</h3>
               </ListGroup.Item>
 
               <ListGroup.Item>
-                <Row>
-                  <Col>Status:</Col>
-                  <Col>
-                    {product?.countInStock > 0 ? "In Stock" : "Out Of Stock"}
-                  </Col>
-                </Row>
+                <Rating
+                  value={product?.rating}
+                  text={`${product?.numReviews} reviews `}
+                />
               </ListGroup.Item>
 
+              <ListGroup.Item>Price : ${product?.price}</ListGroup.Item>
               <ListGroup.Item>
-                    <Button
-                      className='btn-block'
-                      type='button'
-                      disabled={product?.countInStock === 0}
-                    >
-                      Add To Cart
-                    </Button>
-                  </ListGroup.Item>
+                Description: {product?.description}
+              </ListGroup.Item>
             </ListGroup>
-          </Card>
-        </Col>
-      </Row>
-      ) }
+          </Col>
+
+          <Col md={3}>
+            <Card>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Price:</Col>
+                    <Col>
+                      <strong>${product?.price}</strong>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Status:</Col>
+                    <Col>
+                      {product?.countInStock > 0 ? "In Stock" : "Out Of Stock"}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+
+                {product.countInStock > 0 && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Qty</Col>
+                      <Col>
+                        <Form.Control
+                          as="select"
+                          value={qty}
+                          onChange={(e: any) => setQty(Number(e.target.value))}
+                        >
+                          {[...Array(product.countInStock).keys()].map(
+                            (num) => (
+                              <option key={num + 1} value={num + 1}>
+                                {num + 1}
+                              </option>
+                            )
+                          )}
+                        </Form.Control>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
+
+                <ListGroup.Item>
+                  <Button
+                    className="btn-block"
+                    type="button"
+                    disabled={product?.countInStock === 0}
+                    onClick={addToCartHandler}
+                  >
+                    Add To Cart
+                  </Button>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </>
   );
 };
