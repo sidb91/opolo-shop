@@ -38,12 +38,17 @@ const CartScreen = (): React.JSX.Element => {
   return (
     <Row>
       <Col md={8}>
+        
         <h1 style={{ marginBottom: "20px" }}>Shopping Cart</h1>
+        
         {cartItems.length === 0 ? (
+          
           <Message variant="info">
             Your cart is empty <Link to="/">Go Back</Link>
           </Message>
+
         ) : (
+          
           <ListGroup variant="flush">
             {cartItems.map((item: any) => (
               <ListGroup.Item key={item._id}>
@@ -55,7 +60,7 @@ const CartScreen = (): React.JSX.Element => {
                     <Link to={`/product/${item._id}`}>{item.name}</Link>
                   </Col>
                   <Col md={2}>${item.price}</Col>
-                  <Col md={2}>
+                  <Col md={2} sm={2} xs={2}>
                     <Form.Control
                       as="select"
                       value={item.qty}
@@ -70,7 +75,7 @@ const CartScreen = (): React.JSX.Element => {
                       ))}
                     </Form.Control>
                   </Col>
-                  <Col md={2}>
+                  <Col md={2} sm={2} xs={2}>
                     <Button
                       type="button"
                       variant="light"
@@ -85,6 +90,7 @@ const CartScreen = (): React.JSX.Element => {
           </ListGroup>
         )}
       </Col>
+      
       <Col md={4}>
         <Card>
           <ListGroup variant="flush">

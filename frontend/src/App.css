@@ -1,0 +1,11 @@
+.main-container {
+    background-color: #fdebd0;
+}
+
+.footer-container{
+    background-color: #fdebd0;
+}
+
+.dropdown-menu[data-bs-popper] {
+    left: -60px !important;
+}

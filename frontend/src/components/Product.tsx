@@ -10,7 +10,7 @@ type ProductProps = {
 
 const Product = ({ product }: ProductProps): React.JSX.Element => {
   return (
-    <Card className="my-3 p-3 rounded bg-grey text-black">
+    <Card className="my-3 p-3 rounded bg-grey text-black bg-light">
       <Link to={`/product/${product._id}`}>
         <Card.Img src={product.image} variant="top" />
       </Link>

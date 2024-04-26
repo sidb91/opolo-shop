@@ -3,7 +3,7 @@ export const roundTwoPlacesDecimals = (num: number): string => {
     return (Math.round(num * 100) / 100).toFixed(2)
 }
 
-export const updateCart = (state: any) => {
+export const updateCart = (state: any): any => {
 
     // Calculate items price + shipping + tax = total price
     state.itemsPrice = roundTwoPlacesDecimals(state.cartItems.reduce((acc: any, item: any) => {
